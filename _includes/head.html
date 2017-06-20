@@ -1,0 +1,181 @@
+<head>
+    <title>{{ page.title }}</title>
+    <script src="assets/js/crypto-js/core.js"></script>
+    <script src="assets/js/crypto-js/sha256.js"></script>
+    <script src="assets/js/jquery-3.2.1.min.js"></script>
+    <script src="assets/js/firebase-4.1.2.js"></script>
+    <script>
+    // Initialize Firebase
+    var config = {
+        apiKey: "AIzaSyCj1ks6pBSPgzICsuU7NImnuJ5vU4iKO64",
+        authDomain: "web-dev-hosting.firebaseapp.com",
+        databaseURL: "https://web-dev-hosting.firebaseio.com",
+        projectId: "web-dev-hosting",
+        storageBucket: "web-dev-hosting.appspot.com",
+        messagingSenderId: "295248901437"
+    };
+    firebase.initializeApp(config);
+    var database = firebase.database();
+    window.getCookie = function(name){
+        match = document.cookie.match(new RegExp(name + '=([^;]+)'));
+        if (match) return match[1];
+    }
+    function addUser()
+    {
+        var username = document.getElementById("username").value;
+        var pass = document.getElementById("password").value;
+        var hPass = CryptoJS.SHA256(pass);
+        if (username != "" && pass != "" && username != null && pass != null)
+        {
+            var ref = database.ref("users");
+            ref.once('value', function(snapshot)
+            {
+                if (!snapshot.hasChild(username+"/password"))
+                {
+                    ref.child(username+"/password").set(hPass.toString());
+                    document.getElementById("statusadd").style.color = "#45c251";
+                    document.getElementById("statusadd").innerHTML = "User "+username+" with password added.";
+                    document.getElementById("username").value = "";
+                    document.getElementById("password").value = "";
+                }
+                else
+                {
+                    console.log("User "+username+" with password exists.");
+                    document.getElementById("statusadd").style.color = "#c24545";
+                    document.getElementById("statusadd").innerHTML = "User "+username+" exists.";
+                }
+            });
+        }
+        return false;
+    }
+    function addUsers(data)
+    {
+        var username = data[0].toString().substr(0,1)+data[1].toString()+data[2].toString().slice(-2);
+        var pass="K4M5CStudent123!";
+        var hPass = CryptoJS.SHA256(pass);//"51577e141f99fed9a8066713741199ebc528e19bf73598a1e3ee18600fbf52c0";
+        if (username != "" && pass != "" && username != null && pass != null)
+        {
+            var ref = database.ref("users");
+            ref.once('value', function(snapshot)
+            {
+                if (!snapshot.hasChild(username+"/password"))
+                {
+                    ref.child(username+"/password").set(hPass.toString());
+                    ref.child(username+"/firstname").set(data[0].toString());
+                    ref.child(username+"/lastname").set(data[1].toString());
+                    ref.child(username+"/year").set(parseInt(data[2].toString()));
+                    ref.child(username+"/new").set(true);
+                }
+                else
+                {
+                    console.log("User "+username+" with password exists.");
+                }
+            });
+        }
+        return false;
+    }
+    function login()
+    {
+        var username = document.getElementById("user").value;
+        var pass = document.getElementById("pass").value;
+        var hPass = CryptoJS.SHA256(pass);
+        var ref = database.ref("users/"+username+"/password");
+        var connectedRef = database.ref(".info/connected");
+        connectedRef.on('value', function(connectedSnap) {
+            if (connectedSnap.val() === true) {
+                ref.once("value", function(snapshot) {
+                    //console.log(snapshot.val());
+                    //console.log(hPass.toString());
+                    if (snapshot.val() == hPass.toString())
+                    {
+                        console.log("Pass matched!");
+                        document.getElementById("status").style.color = "#3fb440";
+                        document.getElementById("status").innerHTML = "Success.";
+                        console.log("Logged in.");
+                        var date = new Date();
+                        date = new Date(date.getTime() + 1000*60*15); //Set expiry to 30 minutes.
+                        console.log(date);
+                        document.cookie = "_u="+username+";"+"expires="+date.toUTCString();
+                        document.cookie = "_pa="+hPass.toString()+";"+"expires="+date.toUTCString();
+                        location.href="/";
+                    }
+                    else
+                    {
+                        console.log("Pass mismatched!");
+                        document.getElementById("status").style.color = "#d04949";
+                        document.getElementById("status").innerHTML = "Password Incorrect.";
+                        console.log("Incorrect password.");
+                    }
+                }, function (error) {
+                    //console.log("Error: " + error.code);
+                    document.getElementById("status").style.color = "#000000";
+                    document.getElementById("status").innerHTML = "Other error.";
+                    console.log("Other error.");
+                });
+            } else {
+                document.getElementById("status").style.color = "#000000";
+                document.getElementById("status").innerHTML = "Check Internet Connection.";
+                console.log("Check internet.");
+            }
+        });
+        return false;
+    }
+    function log_u(username, hPass, callback)
+    {
+        var ref = database.ref("users/"+username+"/password");
+        var connectedRef = database.ref(".info/connected");
+        ref.once("value", function(snapshot) {
+            if (snapshot.val() == hPass)
+            {
+                console.log("Pass matched!");
+                console.log("Logged in.");
+                //set_code(0);
+                var date = new Date();
+                date = new Date(date.getTime() + 1000*60*30); //Set expiry to 30 minutes.
+                console.log(date);
+                document.cookie = "_u="+username+";"+"expires="+date.toUTCString();
+                document.cookie = "_pa="+hPass+";"+"expires="+date.toUTCString();
+                callback(0);
+            }
+            else
+            {
+                console.log("Pass mismatched!");
+                //set_code(1);
+                callback(1);
+            }
+        }, function (error) {
+            console.log("Other error.");
+            console.log("Error: " + error.code);
+            //set_code(-1);
+            callback(-1);
+        });
+    }
+    function exists(key)
+    {
+        var ref = database.ref();
+        var flag = null;
+        ref.once('value', function(snapshot)
+        {
+            if (snapshot.hasChild(key))
+            {
+                console.log("Key " + key + " exists.");
+                flag = true;
+            }
+            else
+            {
+                console.log("Key " + key + " does not exist.");
+                flag = false;
+            }
+        });
+        return flag;
+    }
+    function logout()
+    {
+        document.cookie = "_u="+";"+"expires="+(new Date()).toUTCString();
+        document.cookie = "_pa="+";"+"expires="+(new Date()).toUTCString();
+    }
+    $(document).ready(function() {
+        console.log("Ready!");
+    });
+    </script>
+</head>

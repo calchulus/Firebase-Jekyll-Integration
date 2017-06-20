@@ -1,0 +1,45 @@
+---
+title: Add Users
+---
+{% include head.html %}
+<script src="assets/js/papaparse.min.js"></script>
+<script>
+function parseUsers()
+{
+    if (confirm("Are you sure you want to add the specified students?"))
+    {
+        var data;
+        var students = document.getElementById("students").files[0];
+        Papa.parse(students,{
+            complete: function(results) {
+                console.log("Finished:", results.data);
+                data = results.data;
+                for (var i=0; i<data.length; i++)
+                {
+                    //console.log(username);
+                    addUsers(data[i]);
+                }
+            }
+        });
+    }
+    else {
+        console.log("Cancelled adding.");
+    }
+}
+</script>
+<input type="file" id="students">
+<br />
+<button onclick="parseUsers()">Add Users</button>
+<br />
+<form id="adduser" onsubmit="return addUser()">
+    <br />
+    <br />
+    <span><strong>Add User</strong></span>
+    <br />
+    <span>Username: </span><input type="text" id="username" required/>
+    <br />
+    <span>Password: </span><input type="password" id="password" required/>
+    <br />
+    <input type="submit" value="Add"/>
+    <span id="statusadd" style="color: #000000"></span>
+</form>
