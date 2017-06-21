@@ -54,7 +54,7 @@
     }
     function addUsers(data)
     {
-        var username, pass;
+        var username, pass, admin=false;
         if (data[3] != null && data[3] != "")
         {
             username = data[3];
@@ -70,6 +70,10 @@
         else {
             pass="K4M5CStudent123!";
         }
+        if (data[5] != null && data[5])
+        {
+            admin = true;
+        }
         var hPass = CryptoJS.SHA256(pass);//"51577e141f99fed9a8066713741199ebc528e19bf73598a1e3ee18600fbf52c0";
         if (username != "" && pass != "" && username != null && pass != null)
         {
@@ -83,7 +87,7 @@
                     ref.child(username+"/lastname").set(data[1].toString());
                     ref.child(username+"/year").set(parseInt(data[2].toString()));
                     ref.child(username+"/new").set(true);
-                    ref.child(username+"/admin").set(false);
+                    ref.child(username+"/admin").set(admin);
                 }
                 else
                 {
@@ -235,11 +239,21 @@
                         $('#u_log').attr('href',"");
                         $('#u_log').attr('onclick',"logout()");
                     }
+                    $('body').show();
                 }
+                $('body').show();
             });
+        }
+        else {
+            $('body').show();
         }
     });
     </script>
+    <style>
+    body {
+        display: none;
+    }
+    </style>
 </head>
 <body>
     <nav class="navbar navbar-inverse">
