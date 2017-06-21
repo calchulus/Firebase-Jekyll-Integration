@@ -27,16 +27,17 @@
     function addUser()
     {
         var username = document.getElementById("username").value;
-        var pass = document.getElementById("password").value;
-        var hPass = CryptoJS.SHA256(pass);
-        if (username != "" && pass != "" && username != null && pass != null)
+        var password = document.getElementById("password").value;
+        var hPass = CryptoJS.SHA256(password);
+        var hUser = CryptoJS.SHA256(username);
+        if (username != "" && password != "" && username != null && password != null)
         {
             var ref = database.ref("users");
             ref.once('value', function(snapshot)
             {
-                if (!snapshot.hasChild(username+"/password"))
+                if (!snapshot.hasChild(hUser+"/password"))
                 {
-                    ref.child(username+"/password").set(hPass.toString());
+                    ref.child(hUser+"/password").set(hPass.toString());
                     document.getElementById("statusadd").style.color = "#45c251";
                     document.getElementById("statusadd").innerHTML = "User "+username+" with password added.";
                     document.getElementById("username").value = "";
@@ -44,7 +45,7 @@
                 }
                 else
                 {
-                    console.log("User "+username+" with password exists.");
+                    console.log("User "+hUser+"("+username+")"+" with password exists.");
                     document.getElementById("statusadd").style.color = "#c24545";
                     document.getElementById("statusadd").innerHTML = "User "+username+" exists.";
                 }
@@ -75,19 +76,20 @@
             admin = true;
         }
         var hPass = CryptoJS.SHA256(pass);//"51577e141f99fed9a8066713741199ebc528e19bf73598a1e3ee18600fbf52c0";
+        var hUser = CryptoJS.SHA256(username);
         if (username != "" && pass != "" && username != null && pass != null)
         {
             var ref = database.ref("users");
             ref.once('value', function(snapshot)
             {
-                if (!snapshot.hasChild(username+"/password"))
+                if (!snapshot.hasChild(hUser+"/password"))
                 {
-                    ref.child(username+"/password").set(hPass.toString());
-                    ref.child(username+"/firstname").set(data[0].toString());
-                    ref.child(username+"/lastname").set(data[1].toString());
-                    ref.child(username+"/year").set(parseInt(data[2].toString()));
-                    ref.child(username+"/new").set(true);
-                    ref.child(username+"/admin").set(admin);
+                    ref.child(hUser+"/password").set(hPass.toString());
+                    ref.child(hUser+"/firstname").set(data[0].toString());
+                    ref.child(hUser+"/lastname").set(data[1].toString());
+                    ref.child(hUser+"/year").set(parseInt(data[2].toString()));
+                    ref.child(hUser+"/new").set(true);
+                    ref.child(hUser+"/admin").set(admin);
                 }
                 else
                 {
@@ -102,7 +104,8 @@
         var username = document.getElementById("user").value;
         var pass = document.getElementById("pass").value;
         var hPass = CryptoJS.SHA256(pass);
-        var ref = database.ref("users/"+username+"/");
+        var hUser = CryptoJS.SHA256(username);
+        var ref = database.ref("users/"+hUser+"/");
         var connectedRef = database.ref(".info/connected");
         connectedRef.on('value', function(connectedSnap) {
             if (connectedSnap.val() === true) {
@@ -118,7 +121,7 @@
                         var date = new Date();
                         date = new Date(date.getTime() + 1000*60*30); //Set expiry to 30 minutes.
                         console.log(date);
-                        document.cookie = "_u="+username+";"+"expires="+date.toUTCString();
+                        document.cookie = "_u="+hUser+";"+"expires="+date.toUTCString();
                         document.cookie = "_pa="+hPass.toString()+";"+"expires="+date.toUTCString();
                         document.cookie = "_f="+snapshot.val().firstname+" "+snapshot.val().lastname+";"+"expires="+date.toUTCString();
                         location.href="{{site.url}}";
@@ -144,9 +147,9 @@
         });
         return false;
     }
-    function log_u(username, hPass, callback)
+    function log_u(hUser, hPass, callback)
     {
-        var ref = database.ref("users/"+username+"/");
+        var ref = database.ref("users/"+hUser+"/");
         var connectedRef = database.ref(".info/connected");
         ref.once("value", function(snapshot) {
             if (snapshot.val().password == hPass)
@@ -157,7 +160,7 @@
                 var date = new Date();
                 date = new Date(date.getTime() + 1000*60*30); //Set expiry to 30 minutes.
                 console.log(date);
-                document.cookie = "_u="+username+";"+"expires="+date.toUTCString();
+                document.cookie = "_u="+hUser+";"+"expires="+date.toUTCString();
                 document.cookie = "_pa="+hPass+";"+"expires="+date.toUTCString();
                 document.cookie = "_f="+snapshot.val().firstname+" "+snapshot.val().lastname+";"+"expires="+date.toUTCString();
                 callback(0, snapshot.val().admin);
@@ -232,16 +235,25 @@
                         $('#u_log').attr('href', "add_users.html")
                         $('#u_log').attr('id', '');
                         //$('#nav').append($('<li><a href="add_users.html">Add Users</a></li>'));
-                        $('#nav').append($('<li><a id="u_log" href="" onclick="logout()">Logout</a></li>'));
+                        $('#nav').append($('<li><a id="u_log" href="login.html" onclick="logout()">Logout</a></li>'));
+                        if (location.href.toString().indexOf("login.html") != -1)
+                        {
+                            location.href="{{site.url}}/";
+                        }
                     }
-                    else {
+                    else
+                    {
                         $('#u_log').text("Logout");
-                        $('#u_log').attr('href',"");
+                        $('#u_log').attr('href',"login.html");
                         $('#u_log').attr('onclick',"logout()");
                         if (location.href.toString().indexOf("add_users.html") != -1)
                         {
                             $('#imp-stuff').empty();
                             $('#imp-stuff').text("Error, access denied.");
+                        }
+                        if (location.href.toString().indexOf("login.html") != -1)
+                        {
+                            location.href="{{site.url}}/";
                         }
                     }
                     $('body').show();
