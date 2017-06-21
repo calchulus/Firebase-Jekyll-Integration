@@ -238,11 +238,22 @@
                         $('#u_log').text("Logout");
                         $('#u_log').attr('href',"");
                         $('#u_log').attr('onclick',"logout()");
+                        if (location.href.toString().indexOf("add_users.html") != -1)
+                        {
+                            $('#imp-stuff').empty();
+                            $('#imp-stuff').text("Error, access denied.");
+                        }
                     }
                     $('body').show();
                 }
                 $('body').show();
             });
+        }
+        else if (location.href.toString().indexOf("add_users.html") != -1)
+        {
+            $('#imp-stuff').empty();
+            $('#imp-stuff').text("Error, access denied.");
+            $('body').show();
         }
         else {
             $('body').show();

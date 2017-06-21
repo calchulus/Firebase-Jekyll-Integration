@@ -27,19 +27,21 @@ function parseUsers()
     }
 }
 </script>
-<input type="file" id="students">
-<br />
-<button onclick="parseUsers()">Add Users</button>
-<br />
-<form id="adduser" onsubmit="return addUser()">
+<div id="imp-stuff">
+    <input type="file" id="students">
     <br />
+    <button onclick="parseUsers()">Add Users</button>
     <br />
-    <span><strong>Add User</strong></span>
-    <br />
-    <span>Username: </span><input type="text" id="username" required/>
-    <br />
-    <span>Password: </span><input type="password" id="password" required/>
-    <br />
-    <input type="submit" value="Add"/>
-    <span id="statusadd" style="color: #000000"></span>
-</form>
+    <form id="adduser" onsubmit="return addUser()">
+        <br />
+        <br />
+        <span><strong>Add User</strong></span>
+        <br />
+        <span>Username: </span><input type="text" id="username" required/>
+        <br />
+        <span>Password: </span><input type="password" id="password" required/>
+        <br />
+        <input type="submit" value="Add"/>
+        <span id="statusadd" style="color: #000000"></span>
+    </form>
+</div>
