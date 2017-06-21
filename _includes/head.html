@@ -65,6 +65,7 @@
                     ref.child(username+"/lastname").set(data[1].toString());
                     ref.child(username+"/year").set(parseInt(data[2].toString()));
                     ref.child(username+"/new").set(true);
+                    ref.child(username+"/admin").set(false);
                 }
                 else
                 {
@@ -122,10 +123,10 @@
     }
     function log_u(username, hPass, callback)
     {
-        var ref = database.ref("users/"+username+"/password");
+        var ref = database.ref("users/"+username+"/");
         var connectedRef = database.ref(".info/connected");
         ref.once("value", function(snapshot) {
-            if (snapshot.val() == hPass)
+            if (snapshot.val().password == hPass)
             {
                 console.log("Pass matched!");
                 console.log("Logged in.");
@@ -135,19 +136,19 @@
                 console.log(date);
                 document.cookie = "_u="+username+";"+"expires="+date.toUTCString();
                 document.cookie = "_pa="+hPass+";"+"expires="+date.toUTCString();
-                callback(0);
+                callback(0, snapshot.val().admin);
             }
             else
             {
                 console.log("Pass mismatched!");
                 //set_code(1);
-                callback(1);
+                callback(1, false);
             }
         }, function (error) {
             console.log("Other error.");
             console.log("Error: " + error.code);
             //set_code(-1);
-            callback(-1);
+            callback(-1, false);
         });
     }
     function exists(key)

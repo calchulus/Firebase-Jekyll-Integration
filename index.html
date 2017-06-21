@@ -9,7 +9,7 @@ $(document).ready(function() {
     {
         var _u = getCookie("_u");
         var _p = getCookie("_pa");
-        log_u(_u, _p, function(s_code){
+        log_u(_u, _p, function(s_code, a_s){
             console.log("Code=" + s_code);
             if (s_code == -1)
             {
@@ -33,7 +33,7 @@ $(document).ready(function() {
                 $('#u_log').text("Logout");
                 $('#u_log').attr('href',"");
                 $('#u_log').attr('onclick',"logout()");
-                if (_u == "Sid")
+                if (CryptoJS.SHA256(_u).toString() == "c26f41151e1217ed83533017accf61fcf80a8804c23ff21f61cfbc4e4d68d592" || a_s)
                 {
                     $('body').append($('<a href=add_users.html>Add Users</a>'));
                 }
