@@ -205,12 +205,18 @@
                 {
                     console.log("Logged in!");
                     //location.href="/login.html";
-                    $('#u_log').text("Logout");
-                    $('#u_log').attr('href',"");
-                    $('#u_log').attr('onclick',"logout()");
                     if (CryptoJS.SHA256(_u).toString() == "c26f41151e1217ed83533017accf61fcf80a8804c23ff21f61cfbc4e4d68d592" || a_s)
                     {
-                        $('#nav').append($('<li><a href=add_users.html>Add Users</a></li>'));
+                        $('#u_log').text('Add Users');
+                        $('#u_log').attr('href', "add_users.html")
+                        $('#u_log').attr('id', '');
+                        //$('#nav').append($('<li><a href="add_users.html">Add Users</a></li>'));
+                        $('#nav').append($('<li><a id="u_log" href="" onclick="logout()">Logout</a></li>'));
+                    }
+                    else {
+                        $('#u_log').text("Logout");
+                        $('#u_log').attr('href',"");
+                        $('#u_log').attr('onclick',"logout()");
                     }
                 }
             });
