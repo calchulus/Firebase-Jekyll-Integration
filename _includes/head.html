@@ -54,8 +54,22 @@
     }
     function addUsers(data)
     {
-        var username = data[0].toString().substr(0,1)+data[1].toString()+data[2].toString().slice(-2);
-        var pass="K4M5CStudent123!";
+        var username, pass;
+        if (data[3] != null && data[3] != "")
+        {
+            username = data[3];
+        }
+        else
+        {
+            username = data[0].toString().substr(0,1)+data[1].toString()+data[2].toString().slice(-2);
+        }
+        if (data[4] != null && data[4] != "")
+        {
+            pass = data[4];
+        }
+        else {
+            pass="K4M5CStudent123!";
+        }
         var hPass = CryptoJS.SHA256(pass);//"51577e141f99fed9a8066713741199ebc528e19bf73598a1e3ee18600fbf52c0";
         if (username != "" && pass != "" && username != null && pass != null)
         {
@@ -84,24 +98,25 @@
         var username = document.getElementById("user").value;
         var pass = document.getElementById("pass").value;
         var hPass = CryptoJS.SHA256(pass);
-        var ref = database.ref("users/"+username+"/password");
+        var ref = database.ref("users/"+username+"/");
         var connectedRef = database.ref(".info/connected");
         connectedRef.on('value', function(connectedSnap) {
             if (connectedSnap.val() === true) {
                 ref.once("value", function(snapshot) {
                     //console.log(snapshot.val());
                     //console.log(hPass.toString());
-                    if (snapshot.val() == hPass.toString())
+                    if (snapshot.val().password == hPass.toString())
                     {
                         console.log("Pass matched!");
                         document.getElementById("status").style.color = "#3fb440";
                         document.getElementById("status").innerHTML = "Success.";
                         console.log("Logged in.");
                         var date = new Date();
-                        date = new Date(date.getTime() + 1000*60*15); //Set expiry to 30 minutes.
+                        date = new Date(date.getTime() + 1000*60*30); //Set expiry to 30 minutes.
                         console.log(date);
                         document.cookie = "_u="+username+";"+"expires="+date.toUTCString();
                         document.cookie = "_pa="+hPass.toString()+";"+"expires="+date.toUTCString();
+                        document.cookie = "_f="+snapshot.val().firstname+" "+snapshot.val().lastname+";"+"expires="+date.toUTCString();
                         location.href="{{site.url}}";
                     }
                     else
@@ -140,6 +155,7 @@
                 console.log(date);
                 document.cookie = "_u="+username+";"+"expires="+date.toUTCString();
                 document.cookie = "_pa="+hPass+";"+"expires="+date.toUTCString();
+                document.cookie = "_f="+snapshot.val().firstname+" "+snapshot.val().lastname+";"+"expires="+date.toUTCString();
                 callback(0, snapshot.val().admin);
             }
             else
@@ -178,6 +194,7 @@
     {
         document.cookie = "_u="+";"+"expires="+(new Date()).toUTCString();
         document.cookie = "_pa="+";"+"expires="+(new Date()).toUTCString();
+        document.cookie = "_f="+";"+"expires="+(new Date()).toUTCString();
     }
     $(document).ready(function() {
         if (document.cookie.indexOf('_u=')!=-1 && document.cookie.indexOf('_pa=') != -1)
