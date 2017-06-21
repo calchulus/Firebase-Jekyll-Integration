@@ -4,6 +4,10 @@
     <script src="assets/js/crypto-js/sha256.js"></script>
     <script src="assets/js/jquery-3.2.1.min.js"></script>
     <script src="assets/js/firebase-4.1.2.js"></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script>
     // Initialize Firebase
     var config = {
@@ -98,7 +102,7 @@
                         console.log(date);
                         document.cookie = "_u="+username+";"+"expires="+date.toUTCString();
                         document.cookie = "_pa="+hPass.toString()+";"+"expires="+date.toUTCString();
-                        location.href="https://sidpagariya.github.io/Firebase-Jekyll-Integration/";
+                        location.href="{{site.url}}";
                     }
                     else
                     {
@@ -180,3 +184,15 @@
     });
     </script>
 </head>
+<body>
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="{{site.url}}">Firebase-Jekyll-Integration</a>
+            </div>
+            <ul class="nav navbar-nav" id="nav">
+                <li><a href="{{site.url}}">Home</a></li>
+                <li><a id="u_log" href="{{site.url}}/login.html">Login</a></li>
+            </ul>
+        </div>
+    </nav>

@@ -35,14 +35,16 @@ $(document).ready(function() {
                 $('#u_log').attr('onclick',"logout()");
                 if (CryptoJS.SHA256(_u).toString() == "c26f41151e1217ed83533017accf61fcf80a8804c23ff21f61cfbc4e4d68d592" || a_s)
                 {
-                    $('body').append($('<a href=add_users.html>Add Users</a>'));
+                    $('#nav').append($('<li><a href=add_users.html>Add Users</a></li>'));
                 }
             }
         });
     }
 });
 </script>
-<h1>Index</h1>
-<nav>
-    <a id="u_log" href="login.html">Login</a>
-</nav>
+
+<div class="container">
+    <h3>Index</h3>
+    <p>Homepage</p>
+</div>
+</body>
