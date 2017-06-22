@@ -1,0 +1,24 @@
+---
+title: Index
+---
+{% include head.html %}
+
+<div class="container">
+    <script>
+    $(document).ready(function() {
+        if (document.cookie.indexOf('_f=')!=-1)
+        {
+            $('#welcome').text("Welcome, "+getCookie("_f").toString()+"!");
+        }
+    });
+    </script>
+    <div id="imp-stuff">
+        <h3>Sample Form</h3>
+        <form>
+            <input type="text" id="#first-name" placeholder="First Name" style="display: inline;"/>
+            <input type="text" id="#last-name" placeholder="Last Name"/>
+            <input type="text" id="#grade" placeholder="Grade "/>
+        </form>
+    </div>
+</div>
+</body>
