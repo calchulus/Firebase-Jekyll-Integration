@@ -10,234 +10,249 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script>
-        // Initialize Firebase
-        var config = {
-            apiKey: "AIzaSyCj1ks6pBSPgzICsuU7NImnuJ5vU4iKO64",
-            authDomain: "web-dev-hosting.firebaseapp.com",
-            databaseURL: "https://web-dev-hosting.firebaseio.com",
-            projectId: "web-dev-hosting",
-            storageBucket: "web-dev-hosting.appspot.com",
-            messagingSenderId: "295248901437"
-        };
-        firebase.initializeApp(config);
-        var database = firebase.database();
-        window.getCookie = function(name) {
-            match = document.cookie.match(new RegExp(name + '=([^;]+)'));
-            if (match) return match[1];
-        }
+    // Initialize Firebase
+    var config = {
+        apiKey: "AIzaSyCj1ks6pBSPgzICsuU7NImnuJ5vU4iKO64",
+        authDomain: "web-dev-hosting.firebaseapp.com",
+        databaseURL: "https://web-dev-hosting.firebaseio.com",
+        projectId: "web-dev-hosting",
+        storageBucket: "web-dev-hosting.appspot.com",
+        messagingSenderId: "295248901437"
+    };
+    firebase.initializeApp(config);
 
-        function addUser() {
-            var username = document.getElementById("username").value;
-            var password = document.getElementById("password").value;
-            var hPass = sha3_512(password);
-            var hUser = sha3_512(username);
-            if (username != "" && password != "" && username != null && password != null) {
-                var ref = database.ref("users");
-                ref.once('value', function(snapshot) {
-                    if (!snapshot.hasChild(hUser + "/password")) {
-                        ref.child(hUser + "/password").set(hPass.toString());
-                        document.getElementById("statusadd").style.color = "#45c251";
-                        document.getElementById("statusadd").innerHTML = "User " + username + " with password added.";
-                        document.getElementById("username").value = "";
-                        document.getElementById("password").value = "";
-                    } else {
-                        console.log("User " + hUser + "(" + username + ")" + " with password exists.");
-                        document.getElementById("statusadd").style.color = "#c24545";
-                        document.getElementById("statusadd").innerHTML = "User " + username + " exists.";
-                    }
-                });
-            }
-            return false;
-        }
+    var database = firebase.database();
+    window.getCookie = function(name) {
+        match = document.cookie.match(new RegExp(name + '=([^;]+)'));
+        if (match) return match[1];
+    }
 
-        function addUsers(data) {
-            var username, pass, admin = false;
-            if (data[3] != null && data[3] != "") {
-                username = data[3];
-            } else {
-                username = data[0].toString().substr(0, 1) + data[1].toString() + data[2].toString().slice(-2);
-            }
-            if (data[4] != null && data[4] != "") {
-                pass = data[4];
-            } else {
-                pass = "K4M5CStudent123!";
-            }
-            if (data[5] != null && data[5]) {
-                admin = true;
-            }
-            var hPass = sha3_512(pass); //"51577e141f99fed9a8066713741199ebc528e19bf73598a1e3ee18600fbf52c0";
-            var hUser = sha3_512(username);
-            if (username != "" && pass != "" && username != null && pass != null) {
-                var ref = database.ref("users");
-                ref.once('value', function(snapshot) {
-                    if (!snapshot.hasChild(hUser + "/password")) {
-                        ref.child(hUser + "/password").set(hPass.toString());
-                        ref.child(hUser + "/firstname").set(data[0].toString());
-                        ref.child(hUser + "/lastname").set(data[1].toString());
-                        ref.child(hUser + "/year").set(parseInt(data[2].toString()));
-                        ref.child(hUser + "/new").set(true);
-                        ref.child(hUser + "/admin").set(admin);
-                    } else {
-                        console.log("User " + username + " with password exists.");
-                    }
-                });
-            }
-            return false;
-        }
-
-        function login() {
-            var username = document.getElementById("user").value;
-            var pass = document.getElementById("pass").value;
-            var hPass = sha3_512(pass);
-            var hUser = sha3_512(username);
-            var ref = database.ref("users/" + hUser + "/");
-            var connectedRef = database.ref(".info/connected");
-            connectedRef.on('value', function(connectedSnap) {
-                if (connectedSnap.val() === true) {
-                    ref.once("value", function(snapshot) {
-                        //console.log(snapshot.val());
-                        //console.log(hPass.toString());
-                        if (snapshot.val().password == hPass.toString()) {
-                            console.log("Pass matched!");
-                            document.getElementById("status").style.color = "#3fb440";
-                            document.getElementById("status").innerHTML = "Success.";
-                            console.log("Logged in.");
-                            var date = new Date();
-                            date = new Date(date.getTime() + 1000 * 60 * 30); //Set expiry to 30 minutes.
-                            console.log(date);
-                            document.cookie = "_u=" + hUser + ";" + "expires=" + date.toUTCString();
-                            document.cookie = "_pa=" + hPass.toString() + ";" + "expires=" + date.toUTCString();
-                            document.cookie = "_f=" + snapshot.val().firstname + " " + snapshot.val().lastname + ";" + "expires=" + date.toUTCString();
-                            location.href = "{{site.url}}";
-                        } else {
-                            console.log("Pass mismatched!");
-                            document.getElementById("status").style.color = "#d04949";
-                            document.getElementById("status").innerHTML = "Password Incorrect.";
-                            console.log("Incorrect password.");
-                        }
-                    }, function(error) {
-                        //console.log("Error: " + error.code);
-                        document.getElementById("status").style.color = "#000000";
-                        document.getElementById("status").innerHTML = "Other error.";
-                        console.log("Other error.");
-                    });
-                } else {
-                    document.getElementById("status").style.color = "#000000";
-                    document.getElementById("status").innerHTML = "Check Internet Connection.";
-                    console.log("Check internet.");
-                }
-            });
-            return false;
-        }
-
-        function log_u(hUser, hPass, callback) {
-            var ref = database.ref("users/" + hUser + "/");
-            var connectedRef = database.ref(".info/connected");
-            ref.once("value", function(snapshot) {
-                if (snapshot.val().password == hPass) {
-                    console.log("Pass matched!");
-                    console.log("Logged in.");
-                    //set_code(0);
-                    var date = new Date();
-                    date = new Date(date.getTime() + 1000 * 60 * 30); //Set expiry to 30 minutes.
-                    console.log(date);
-                    document.cookie = "_u=" + hUser + ";" + "expires=" + date.toUTCString();
-                    document.cookie = "_pa=" + hPass + ";" + "expires=" + date.toUTCString();
-                    document.cookie = "_f=" + snapshot.val().firstname + " " + snapshot.val().lastname + ";" + "expires=" + date.toUTCString();
-                    callback(0, snapshot.val().admin);
-                } else {
-                    console.log("Pass mismatched!");
-                    //set_code(1);
-                    callback(1, false);
-                }
-            }, function(error) {
-                console.log("Other error.");
-                console.log("Error: " + error.code);
-                //set_code(-1);
-                callback(-1, false);
-            });
-        }
-
-        function exists(key) {
-            var ref = database.ref();
-            var flag = null;
+    function addUser() {
+        var username = document.getElementById("username").value;
+        var password = document.getElementById("password").value;
+        var hPass = sha3_512(password);
+        var hUser = sha3_512(username);
+        if (username != "" && password != "" && username != null && password != null) {
+            var ref = database.ref("users");
             ref.once('value', function(snapshot) {
-                if (snapshot.hasChild(key)) {
-                    console.log("Key " + key + " exists.");
-                    flag = true;
+                if (!snapshot.hasChild(hUser + "/_pp")) {
+                    ref.child(hUser + "/_pp").set(hPass.toString());
+                    document.getElementById("statusadd").style.color = "#45c251";
+                    document.getElementById("statusadd").innerHTML = "User " + username + " with password added.";
+                    document.getElementById("username").value = "";
+                    document.getElementById("password").value = "";
                 } else {
-                    console.log("Key " + key + " does not exist.");
-                    flag = false;
+                    console.log("User " + hUser + "(" + username + ")" + " with password exists.");
+                    document.getElementById("statusadd").style.color = "#c24545";
+                    document.getElementById("statusadd").innerHTML = "User " + username + " exists.";
                 }
             });
-            return flag;
         }
+        return false;
+    }
 
-        function logout() {
-            document.cookie = "_u=" + ";" + "expires=" + (new Date()).toUTCString();
-            document.cookie = "_pa=" + ";" + "expires=" + (new Date()).toUTCString();
-            document.cookie = "_f=" + ";" + "expires=" + (new Date()).toUTCString();
+    function addUsers(data) {
+        var username, pass, admin = false;
+        if (data[3] != null && data[3] != "") {
+            username = data[3];
+        } else {
+            username = data[0].toString().substr(0, 1) + data[1].toString() + data[2].toString().slice(-2);
         }
-        $(document).ready(function() {
-            if (document.cookie.indexOf('_u=') != -1 && document.cookie.indexOf('_pa=') != -1) {
-                var _u = getCookie("_u");
-                var _p = getCookie("_pa");
-                log_u(_u, _p, function(s_code, a_s) {
-                    console.log("Code=" + s_code);
-                    if (s_code == -1) {
-                        console.log("Other error.");
-                        //location.href="/?other-error";
-                    } else if (s_code == 2) {
-                        console.log("Check internet connection.");
-                        //location.href="check-internet";
-                    } else if (s_code == 1) {
-                        console.log("Password is wrong.");
-                        //location.href="wrong-pass";
-                    } else if (s_code == 0) {
-                        console.log("Logged in!");
-                        //location.href="/login.html";
-                        if (sha3_512(_u).toString() == "c26f41151e1217ed83533017accf61fcf80a8804c23ff21f61cfbc4e4d68d592" || a_s) {
-                            $('#add_users').attr('href', 'add_users.html');
-                            //$('#nav').append($('<li><a href="add_users.html">Add Users</a></li>'));
-                            $('#sample_form').attr('href', 'sample_form.html');
-                            $('#u_log').attr('onclick', 'logout()');
-                            $('#u_log').text('Logout');
-                            //$('#nav').append($('<li><a id="u_log" href="login.html" onclick="logout()">Logout</a></li>'));
-                            if (location.href.toString().indexOf("login.html") != -1) {
-                                location.href = "{{site.url}}/";
-                            }
-                        } else {
-                            $('#sample_form').attr('href', 'sample_form.html');
-                            $('#u_log').text("Logout");
-                            $('#u_log').attr('href', "login.html");
-                            $('#u_log').attr('onclick', "logout()");
-                            if (location.href.toString().indexOf("add_users.html") != -1) {
-                                $('#imp-stuff').empty();
-                                $('#imp-stuff').text("Error, access denied.");
-                            }
-                            if (location.href.toString().indexOf("login.html") != -1) {
-                                location.href = "{{site.url}}/";
-                            }
-                        }
-                        $('body').show();
+        if (data[4] != null && data[4] != "") {
+            pass = data[4];
+        } else {
+            pass = "K4M5CStudent123!";
+        }
+        if (data[5] != null && data[5]) {
+            admin = true;
+        }
+        var hPass = sha3_512(pass); //"51577e141f99fed9a8066713741199ebc528e19bf73598a1e3ee18600fbf52c0";
+        var hUser = sha3_512(username);
+        var hA = sha3_512(admin.toString());
+        console.log("admtostr is: "+admin.toString());
+        if (username != "" && pass != "" && username != null && pass != null) {
+            var ref = database.ref("users");
+            ref.once('value', function(snapshot) {
+                var user = {
+                    _pp: hPass.toString(),
+                    _f: data[0].toString(),
+                    _l: data[1].toString(),
+                    _y: parseInt(data[2].toString()),
+                    _n: true,
+                    _a: admin
+                };
+                if (!snapshot.hasChild(hUser + "/_pp")) {
+                    ref.child(hUser).set(user);
+                    /*ref.child(hUser + "/_pp").set(hPass.toString());
+                    ref.child(hUser + "/_f").set(data[0].toString());
+                    ref.child(hUser + "/_l").set(data[1].toString());
+                    ref.child(hUser + "/_y").set(parseInt(data[2].toString()));
+                    ref.child(hUser + "/_n").set(true);
+                    ref.child(hUser + "/_a").set(admin);*/
+                } else {
+                    console.log("User " + username + " with password exists.");
+                    ref.child(hUser).update(user);
+                }
+            });
+        }
+        return false;
+    }
+
+    function login() {
+        var username = document.getElementById("user").value;
+        var pass = document.getElementById("pass").value;
+        var hPass = sha3_512(pass);
+        var hUser = sha3_512(username);
+        var ref = database.ref("users/" + hUser + "/");
+        var connectedRef = database.ref(".info/connected");
+        connectedRef.on('value', function(connectedSnap) {
+            if (connectedSnap.val() === true) {
+                ref.once("value", function(snapshot) {
+                    //console.log(snapshot.val());
+                    //console.log(hPass.toString());
+                    if (snapshot.val()._pp == hPass.toString()) {
+                        console.log("Pass matched!");
+                        document.getElementById("status").style.color = "#3fb440";
+                        document.getElementById("status").innerHTML = "Success.";
+                        console.log("Logged in.");
+                        var date = new Date();
+                        date = new Date(date.getTime() + 1000 * 60 * 30); //Set expiry to 30 minutes.
+                        console.log(date);
+                        document.cookie = "_u=" + hUser + ";" + "expires=" + date.toUTCString();
+                        document.cookie = "_pa=" + hPass.toString() + ";" + "expires=" + date.toUTCString();
+                        document.cookie = "_uu=" + snapshot.val()._f + " " + snapshot.val()._l + ";" + "expires=" + date.toUTCString();
+                        location.href = "{{site.url}}";
+                    } else {
+                        console.log("Pass mismatched!");
+                        document.getElementById("status").style.color = "#d04949";
+                        document.getElementById("status").innerHTML = "Password Incorrect.";
+                        console.log("Incorrect password.");
                     }
-                    $('body').show();
+                }, function(error) {
+                    //console.log("Error: " + error.code);
+                    document.getElementById("status").style.color = "#000000";
+                    document.getElementById("status").innerHTML = "Other error.";
+                    console.log("Other error.");
                 });
             } else {
-                if (location.href.toString().indexOf("add_users.html") != -1 || location.href.toString().indexOf("sample_form.html") != -1) {
-                    $('#imp-stuff').empty();
-                    $('#imp-stuff').text("Error, access denied.");
-                }
-                $('#add_users').remove();
-                $('#sample_form').remove();
-                $('body').show();
+                document.getElementById("status").style.color = "#000000";
+                document.getElementById("status").innerHTML = "Check Internet Connection.";
+                console.log("Check internet.");
             }
         });
+        return false;
+    }
+
+    function log_u(hUser, hPass, callback) {
+        var ref = database.ref("users/" + hUser + "/");
+        var connectedRef = database.ref(".info/connected");
+        ref.once("value", function(snapshot) {
+            if (snapshot.val()._pp == hPass) {
+                console.log("Pass matched!");
+                console.log("Logged in.");
+                //set_code(0);
+                var date = new Date();
+                date = new Date(date.getTime() + 1000 * 60 * 30); //Set expiry to 30 minutes.
+                console.log(date);
+                document.cookie = "_u=" + hUser + ";" + "expires=" + date.toUTCString();
+                document.cookie = "_pa=" + hPass + ";" + "expires=" + date.toUTCString();
+                document.cookie = "_uu=" + snapshot.val()._f + " " + snapshot.val()._l + ";" + "expires=" + date.toUTCString();
+                callback(0, snapshot.val()._a);
+            } else {
+                console.log("Pass mismatched!");
+                //set_code(1);
+                callback(1, false);
+            }
+        }, function(error) {
+            console.log("Other error.");
+            console.log("Error: " + error.code);
+            //set_code(-1);
+            callback(-1, false);
+        });
+    }
+
+    function exists(key) {
+        var ref = database.ref();
+        var flag = null;
+        ref.once('value', function(snapshot) {
+            if (snapshot.hasChild(key)) {
+                console.log("Key " + key + " exists.");
+                flag = true;
+            } else {
+                console.log("Key " + key + " does not exist.");
+                flag = false;
+            }
+        });
+        return flag;
+    }
+
+    function logout() {
+        document.cookie = "_u=" + ";" + "expires=" + (new Date()).toUTCString();
+        document.cookie = "_pa=" + ";" + "expires=" + (new Date()).toUTCString();
+        document.cookie = "_uu=" + ";" + "expires=" + (new Date()).toUTCString();
+    }
+    $(document).ready(function() {
+        if (document.cookie.indexOf('_u=') != -1 && document.cookie.indexOf('_pa=') != -1) {
+            var _u = getCookie("_u");
+            var _p = getCookie("_pa");
+            log_u(_u, _p, function(s_code, a_s) {
+                console.log("Code=" + s_code);
+                if (s_code == -1) {
+                    console.log("Other error.");
+                    logout();
+                    //location.href="/?other-error";
+                } else if (s_code == 2) {
+                    console.log("Check internet connection.");
+                    //location.href="check-internet";
+                } else if (s_code == 1) {
+                    console.log("Password is wrong.");
+                    logout();
+                    //location.href="wrong-pass";
+                } else if (s_code == 0) {
+                    console.log("Logged in!");
+                    //location.href="/login.html";
+                    if (sha3_512(_u).toString() == "c26f41151e1217ed83533017accf61fcf80a8804c23ff21f61cfbc4e4d68d592" || a_s) {
+                        $('#add_users').attr('href', 'add_users.html');
+                        //$('#nav').append($('<li><a href="add_users.html">Add Users</a></li>'));
+                        $('#sample_form').attr('href', 'sample_form.html');
+                        $('#u_log').attr('onclick', 'logout()');
+                        $('#u_log').text('Logout');
+                        //$('#nav').append($('<li><a id="u_log" href="login.html" onclick="logout()">Logout</a></li>'));
+                        if (location.href.toString().indexOf("login.html") != -1) {
+                            location.href = "{{site.url}}/";
+                        }
+                    } else {
+                        $('#sample_form').attr('href', 'sample_form.html');
+                        $('#u_log').text("Logout");
+                        $('#u_log').attr('href', "login.html");
+                        $('#u_log').attr('onclick', "logout()");
+                        if (location.href.toString().indexOf("add_users.html") != -1) {
+                            $('#imp-stuff').empty();
+                            $('#imp-stuff').text("Error, access denied.");
+                        }
+                        if (location.href.toString().indexOf("login.html") != -1) {
+                            location.href = "{{site.url}}/";
+                        }
+                    }
+                    $('body').show();
+                }
+                $('body').show();
+            });
+        } else {
+            if (location.href.toString().indexOf("add_users.html") != -1 || location.href.toString().indexOf("sample_form.html") != -1) {
+                $('#imp-stuff').empty();
+                $('#imp-stuff').text("Error, access denied.");
+            }
+            $('#add_users').remove();
+            $('#sample_form').remove();
+            $('body').show();
+        }
+    });
     </script>
     <style>
-        body {
-            display: none;
-        }
+    body {
+        display: none;
+    }
     </style>
 </head>
 

@@ -28,6 +28,9 @@ github_username:  jekyll
 markdown: kramdown
 gems:
   - jekyll-feed
+  - jekyll-sitemap
 exclude:
   - Gemfile
   - Gemfile.lock
+host: 0.0.0.0
+port: 8000

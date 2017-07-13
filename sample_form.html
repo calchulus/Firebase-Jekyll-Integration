@@ -1,23 +1,76 @@
 ---
-title: Index
+title: Sample Form
+sitemap: false
+id: _z1
 ---
 {% include head.html %}
 
 <div class="container">
     <script>
+    var arr = ["z1","firstname", "lastname", "gradyear", "field1", "field2"];
     $(document).ready(function() {
-        if (document.cookie.indexOf('_f=')!=-1)
+        var ref = database.ref("users/" + getCookie("_u").toString() + "/");
+        $('#sampleform').hide();
+        try {
+            ref.once("value", function(snapshot) {
+                var date = new Date();
+                date = new Date(date.getTime() + 1000 * 60 * 30); //Set expiry to 30 minutes.
+                if (snapshot.val()._n) {
+                    $('#up').val("Update for the first time");
+                    document.cookie = "_n=1" + ";" + "expires=" + date.toUTCString();
+                    console.log("New!")
+                }
+                else {
+                    document.cookie = "_n=0" + ";" + "expires=" + date.toUTCString();
+                    console.log("Old!");
+                    var ref2 = ref.child("{{page.id}}/");
+                    ref2.once("value", function(snapshot){
+                        snapshot.forEach(function(item) {
+                            console.log(item.key +": "+item.val());
+                            $('#'+item.key).val(item.val().toString());
+                        });
+                    });
+                }
+                $('#sampleform').show();
+            });
+        }
+        catch (err)
         {
-            $('#welcome').text("Welcome, "+getCookie("_f").toString()+"!");
+            console.log("Error: "+err.message);
         }
     });
+    /*$('#up').on("click", function(e){
+        e.preventDefault();
+        console.log("Got here!");
+        for (var i=1; i<arr.length; i++)
+        {
+            console.log($('#'+arr[i]).val());
+            if ($('#'+arr[i]).val() == null && $('#'+arr[i]).val() == "")
+            {
+                console.log("One field is NOT empty: "+arr[i]);
+            }
+        }
+    });*/
+    function up()
+    {
+        var ref = database.ref("users/"+getCookie("_u").toString());
+
+        return false;
+    }
     </script>
     <div id="imp-stuff">
         <h3>Sample Form</h3>
-        <form>
-            <input type="text" id="#first-name" placeholder="First Name" style="display: inline;"/>
-            <input type="text" id="#last-name" placeholder="Last Name"/>
-            <input type="text" id="#grade" placeholder="Grade "/>
+        <form id="sampleform" onsubmit="return up()">
+            <input type="text" id="firstname" style="display: inline;" required disabled/>
+            <input type="text" id="lastname" required disabled/>
+            <input type="text" id="gradyear" required disabled/>
+            <br />
+            <label>Field 1: </label><input type="text" id="field1" />
+            <br />
+            <label>Field 2:</label><input type="text" id="field2" />
+            <br />
+            <input type="submit" value="Update" />
+            <span id="status" style="color: #000000"></span>
         </form>
     </div>
 </div>
