@@ -1,0 +1,124 @@
+---
+name: addusers
+title: Add Users
+permalink: addusers
+sitemap: false
+---
+
+{% include head.html %}
+
+<div class="row">
+    <div class="col-lg-10 col-md-10 col-sm-10 col-lg-offset-1 col-md-offset-1 col-sm-offset-1">
+        <div class="card card-profile">
+            <div class="card-avatar">
+                <a href="manage-account">
+                    <img class="img" id="user-img" src="assets/images/default-avatar.png"/>
+                </a>
+            </div>
+
+            <div class="content">
+                <h6 class="category text-gray" id="user-title">KAMSC Student</h6>
+                <h4 class="card-title" id="user-name"></h4>
+                <p class="card-content" id="user-bio">
+                </p>
+                <a href="manage-profile.html" class="btn btn-primary btn-round">Edit</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-offset-2 col-md-8">
+        <div class="title">
+            <h3>Who's online?</h3>
+        </div>
+
+        <!-- Tabs with icons on Card -->
+        <div class="card card-nav-tabs">
+            <div class="header-tab header-tab-danger">
+                <!-- colors: "header-primary", "header-info", "header-success", "header-warning", "header-danger" -->
+                <div class="nav-tabs-navigation">
+                    <div class="nav-tabs-wrapper">
+                        <ul class="nav nav-tabs" data-tabs="tabs">
+                            <li class="active">
+                                <a href="#all-online" data-toggle="tab" aria-expanded="false">
+                                    <i class="material-icons">face</i>
+                                    All Online
+                                    <div class="ripple-container"></div></a>
+                                </li>
+                                <li class="">
+                                    <a href="#users" data-toggle="tab" aria-expanded="false">
+                                        <i class="material-icons">stars</i>
+                                        Users
+                                        <div class="ripple-container"></div></a>
+                                    </li>
+                                    <li class="">
+                                        <a href="#members" data-toggle="tab" aria-expanded="true">
+                                            <i class="material-icons">verified_user</i>
+                                            Members
+                                            <div class="ripple-container"></div></a>
+
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="content padded-15">
+                            <div class="tab-content text-left">
+                                <div class="tab-pane active" id="all-online">
+                                    <span>Total online: </span><span class="label label-warning" id="sA">0</span>
+                                </div>
+                                <div class="tab-pane" id="users">
+                                    <span>Total online users: </span><span class="label label-info" id="sU">0</span>
+                                </div>
+                                <div class="tab-pane" id="members">
+                                    <span>Total online members: </span><span class="label label-success" id="sM">0</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <script>
+            function pageScript()
+            {
+                if (!u.isAnonymous){$("#user-name").html(u.displayName);}
+                if (u.photoURL){$("#user-img").attr("src",u.photoURL);}
+                var ref = database.ref('online');
+                window.onlineA = 0;
+                window.onlineM = 0;
+                window.onlineU = 0;
+                ref.once('value', function(snapshot) {
+                    snapshot.forEach(function(childSnapshot) {
+                        var childData = childSnapshot.val();
+                        if (childData.o == "true")
+                        {
+                            window.onlineA = window.onlineA+1;
+                        }
+                        if (childData.m == "true")
+                        {
+                            //console.log("member!");
+                            window.onlineM++;
+                        }
+                        else
+                        {
+                            //console.log("user!");
+                            window.onlineU++;
+                        }
+                    });
+                    setOnline();
+                });
+            }
+            function setOnline()
+            {
+                //console.log(window.onlineA);
+                //console.log(window.onlineM);
+                //console.log(window.onlineU);
+                $('#sA').html(window.onlineA.toString());
+                $('#sU').html(window.onlineU.toString());
+                $('#sM').html(window.onlineM.toString());
+            }
+            </script>
+
+            {% include footer.html %}
