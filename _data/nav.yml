@@ -1,0 +1,13 @@
+sidebar:
+  - name: Dashboard
+    icon: dashboard
+    url: dashboard
+  - name: Manage Profile
+    icon: person
+    url: manage-profile
+  - name: Manage Account
+    icon: settings
+    url: manage-account
+  - name: Notifications
+    icon: notifications
+    url: notifications

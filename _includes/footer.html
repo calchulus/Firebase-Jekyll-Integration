@@ -51,7 +51,7 @@
 
 <script src="assets/js/jquery.validate.min.js"></script>
 <script src="assets/js/sha3.min.js"></script>
-<script src="assets/js/firebase-4.1.2.js"></script>
+<script src="assets/js/firebase.js"></script>
 <script src='assets/js/idle.min.js'></script>
 
 <script>
@@ -86,8 +86,9 @@ if (c === 0)
 
 <!--Now, display the page.-->
 <script>
-setTimeout(function(){$(".loader-overlay").css('opacity','0');}, 100);
-setTimeout(function(){$(".wrapper").css('display','block'); $(".loader-overlay").css('z-index','-1');}, 200);
+setTimeout(function(){$(".loader-overlay").css('opacity','0');},400);
+setTimeout(function(){$(".wrapper").css('display','block');}, 300);
+setTimeout(function(){$(".loader-overlay").css('z-index','-1');}, 700);
 </script>
 
 </body>

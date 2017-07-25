@@ -1,0 +1,183 @@
+---
+title: Manage Profile
+permalink: manage-profile
+---
+
+{% include head.html %}
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header" data-background-color="kamsc">
+                <h4 class="title">Edit Profile</h4>
+                <p class="category">Complete your profile</p>
+            </div>
+            <div class="card-content">
+                <form>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group label-floating">
+                                <label class="control-label">Username</label>
+                                <input type="text" class="form-control" id="username" disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="form-group label-floating">
+                                <label class="control-label">Email address</label>
+                                <input type="email" class="form-control" id="email">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group label-floating">
+                                <label class="control-label">Fist Name</label>
+                                <input type="text" class="form-control" id="fname">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group label-floating">
+                                <label class="control-label">Last Name</label>
+                                <input type="text" class="form-control" id="lname">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group label-floating">
+                                <label class="control-label">Adress</label>
+                                <input type="text" class="form-control" id="addr">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group label-floating">
+                                <label class="control-label">City</label>
+                                <input type="text" class="form-control" id="city">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group label-floating">
+                                <label class="control-label">Country</label>
+                                <input type="text" class="form-control" id="country">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group label-floating">
+                                <label class="control-label">Postal Code</label>
+                                <input type="text" class="form-control" id="zipc">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>About Me</label>
+                                <div class="form-group label-floating">
+                                    <label class="control-label"> A biographical Tweet/Quote (140 characters)</label>
+                                    <textarea class="form-control" rows="5" length="140"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary pull-right">Update Profile</button>
+                    <div class="clearfix"></div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card card-profile">
+            <div class="card-avatar">
+                <a href="#pablo">
+                    <img class="img" src="assets/images/default-avatar.png" id="user-img"/>
+                </a>
+            </div>
+
+            <div class="content">
+                <h6 class="category text-gray" id="user-title">Unknown Title</h6>
+                <h4 class="card-title" id="user-name">Unknown Member</h4>
+                <p class="card-content" id="user-bio">
+                    Don't be scared of the truth because we need to restart the human foundation in truth And I love you like Kanye loves Kanye I love Rick Owens’ bed design but the back is...
+                </p>
+                <a href="#pablo" class="btn btn-primary btn-round">Follow</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function pageScript()
+{
+    getinitOnline();
+    getinitInfo();
+}
+function getinitOnline()
+{
+    var ref = database.ref('online');
+    window.onlineA = 0;
+    window.onlineM = 0;
+    window.onlineU = 0;
+    ref.once('value', function(snapshot) {
+        snapshot.forEach(function(childSnapshot) {
+            var childData = childSnapshot.val();
+            if (childData.o == "true")
+            {
+                window.onlineA = window.onlineA+1;
+            }
+            if (childData.m == "true")
+            {
+                //console.log("member!");
+                window.onlineM++;
+            }
+            else
+            {
+                //console.log("user!");
+                window.onlineU++;
+            }
+        });
+        setinitOnline();
+    });
+}
+function setinitOnline()
+{
+    //console.log(window.onlineA);
+    //console.log(window.onlineM);
+    //console.log(window.onlineU);
+    $('#sA').html(window.onlineA.toString());
+    $('#sU').html(window.onlineU.toString());
+    $('#sM').html(window.onlineM.toString());
+}
+function getinitInfo()
+{
+    var ref = database.ref('users/'+u.uid);
+    ref.once('value', function(snapshot) {
+        window.u.info = snapshot.val();
+        //console.log(snapshot.val());
+        setinitInfo();
+    });
+    //if (!u.isAnonymous){$("#user-name").html(u.displayName);}
+    //if (u.photoURL){$("#user-img").attr("src",u.photoURL);}
+}
+function setinitInfo()
+{
+    var keys = Object.keys(window.u.info);
+    keys.forEach(function(key)
+    {
+        $('#'+key).focus().val(u.info[key]);
+        $('#'+key).closest('div').removeClass('is-empty');
+    });
+    var displayName = window.u.info.fname + ' ' + window.u.info.lname;
+    if (window.u.info.title){$('#user-title').html(window.u.info.title);}
+    if (displayName != ' '){$('#user-name').html(displayName);}
+    if (window.u.info.photoURL){$('#user-img').attr('src', window.u.info.photoURL);  console.log(displayName);}
+}
+</script>
+
+{% include footer.html %}

@@ -8,20 +8,20 @@ function updateStatus(userRef)
             //sessionRef.child('ended').onDisconnect().set(firebase.database.ServerValue.TIMESTAMP);
             //sessionRef.child('began').set(firebase.database.ServerValue.TIMESTAMP);
 
-            userRef.child('status').set('online');
             userRef.child('status').onDisconnect().set('offline');
+            userRef.child('status').set('online');
 
             userRef.child('lastseen').onDisconnect().set(firebase.database.ServerValue.TIMESTAMP);
 
-            userRef.child('isOnline').set(true);
             userRef.child('isOnline').onDisconnect().set(false);
+            userRef.child('isOnline').set(true);
         }
     });
     var idle = new Idle({
-        onHidden: function(){userRef.child('status').set('away');},
-        onVisible: function(){userRef.child('status').set('online');},
-        onAway: function(){userRef.child('status').set('inactive');},
-        onAwayBack: function(){userRef.child('status').set('online');},
+        onHidden: function(){userRef.child('status').onDisconnect().set('offline'); userRef.child('status').set('away');},
+        onVisible: function(){userRef.child('status').onDisconnect().set('offline'); userRef.child('status').set('online');},
+        onAway: function(){userRef.child('status').onDisconnect().set('offline'); userRef.child('status').set('inactive');},
+        onAwayBack: function(){userRef.child('status').onDisconnect().set('offline'); userRef.child('status').set('online');},
         awayTimeout: 20000 //away with 20 seconds of inactivity
     }).start();
     /*
@@ -36,12 +36,15 @@ function onlineList(olRef)
     var amOnline = database.ref('.info/connected');
     amOnline.on('value', function(snapshot) {
         if (snapshot.val()) {
+            olRef.onDisconnect().remove();
             olRef.child('o').set('true');
             if (!u.isAnonymous)
             {
+                olRef.onDisconnect().remove();
                 olRef.child('m').set('true');
             }
             else {
+                olRef.onDisconnect().remove();
                 olRef.child('m').set('false');
             }
         }
@@ -65,12 +68,12 @@ firebase.auth().onAuthStateChanged(function(user) {
         pageScript();
     } else {
         //Anonymously sign in.
-        firebase.auth().signInAnonymously().catch(function(error) {
+        /*firebase.auth().signInAnonymously().catch(function(error) {
             // Handle Errors here.
             var errorCode = error.code;
             var errorMessage = error.message;
             // ...
             console.log(errorCode + ": " + errorMessage);
-        });
+        });*/
     }
 });
