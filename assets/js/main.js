@@ -65,6 +65,7 @@ firebase.auth().onAuthStateChanged(function(user) {
         window.u = user;
         updateStatus(database.ref('presence/' + u.uid));
         onlineList(database.ref('online/' + u.uid));
+        setLoginInfo();
         pageScript();
     } else {
         //Anonymously sign in.
@@ -77,3 +78,13 @@ firebase.auth().onAuthStateChanged(function(user) {
         });*/
     }
 });
+function setLoginInfo()
+{
+    if (!window.u.isAnonymous) {
+        $("#log-in-out").append('<li><a href="../manage-profile"><span class="tab">Manage Profile</span></a></li>');
+        $("#log-in-out").append('<li><a href="../logout"><span class="tab">Logout</span></a></li>');
+    }
+    else {
+        $("#log-in-out").append('<li><a href="../login"><span class="tab">Login</span></a></li>');
+    }
+}

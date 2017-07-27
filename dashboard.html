@@ -17,9 +17,8 @@ permalink: dashboard
             <div class="content">
                 <h6 class="category text-gray" id="user-title">KAMSC Student</h6>
                 <h4 class="card-title" id="user-name">Unknown Student</h4>
-                <p class="card-content" id="user-bio">
-                </p>
-                <a href="manage-profile.html" class="btn btn-primary btn-round">Edit</a>
+                <p class="card-content" id="bio">Unknown Student Bio</p>
+                <a href="../manage-profile" class="btn btn-primary btn-round">Edit</a>
             </div>
         </div>
     </div>
@@ -86,7 +85,7 @@ permalink: dashboard
                 <h4 class="title">Links that only you can access</h4>
             </div>
             <div class="card-content">
-                <!--a class="btn btn-warning" href="#" class="button">Trial link</a-->
+                <a class="btn btn-warning" href="#" class="button">Trial link</a>
             </div>
         </div>
     </div>
@@ -95,8 +94,11 @@ permalink: dashboard
 <script>
 function pageScript()
 {
-    if (!u.isAnonymous){$("#user-name").html(u.displayName);}
-    if (u.photoURL){$("#user-img").attr("src",u.photoURL);}
+    getinitOnline();
+    getinitInfo();
+}
+function getinitOnline()
+{
     var ref = database.ref('online');
     window.onlineA = 0;
     window.onlineM = 0;
@@ -119,10 +121,10 @@ function pageScript()
                 window.onlineU++;
             }
         });
-        setOnline();
+        setinitOnline();
     });
 }
-function setOnline()
+function setinitOnline()
 {
     //console.log(window.onlineA);
     //console.log(window.onlineM);
@@ -130,6 +132,29 @@ function setOnline()
     $('#sA').html(window.onlineA.toString());
     $('#sU').html(window.onlineU.toString());
     $('#sM').html(window.onlineM.toString());
+}
+function getinitInfo()
+{
+    var ref = database.ref('users/'+u.uid);
+    ref.once('value', function(snapshot) {
+        window.u.info = snapshot.val();
+        //console.log(snapshot.val());
+        setinitInfo();
+    });
+    //if (!u.isAnonymous){$("#user-name").html(u.displayName);}
+    //if (u.photoURL){$("#user-img").attr("src",u.photoURL);}
+}
+function setinitInfo()
+{
+    var keys = Object.keys(window.u.info);
+    keys.forEach(function(key)
+    {
+        $('#'+key).html(u.info[key]);
+    });
+    var displayName = window.u.info.fname + ' ' + window.u.info.lname;
+    if (window.u.info.title){$('#user-title').html(window.u.info.title);}
+    if (displayName != ' '){$('#user-name').html(displayName);}
+    if (window.u.info.photoURL){$('#user-img').attr('src', window.u.info.photoURL);  console.log(displayName);}
 }
 </script>
 
