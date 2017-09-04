@@ -15,6 +15,7 @@
     <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons" />
     <link rel="stylesheet" href="assets/css/materialicons.css" />
     <link rel="stylesheet" href="assets/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="assets/css/iziToast.min.css" />
     <!-- CSS Files -->
     <link href="assets/css/bootstrap.min.css" rel="stylesheet" />
     <!--link href="assets/css/material-bootstrap-wizard.css" rel="stylesheet" /-->
@@ -112,41 +113,25 @@
         </div>
 
         <div class="sidebar-wrapper">
-            <ul class="nav">
-                {% for m in site.data.nav.sidebar %}
-                <li {% if m.url == page.permalink %} class="active" {% endif %}>
-                    <a href="../{{m.url}}">
-                        <i class="material-icons">{{ m.icon }}</i>
-                        <p>{{ m.name }}</p>
+            <ul class="nav" id="nav-items">
+                <li id="n1">
+                    <a href="/">
+                        <i class="material-icons">dashboard</i>
+                        <p>Dashboard</p>
                     </a>
                 </li>
-                {% endfor %}
-                {% if page.permalink == "addusers" %}
-                <li class="active" id="addusers-menu">
-                    <a href="../addusers">
-                        <i class="material-icons">person_add</i>
-                        <p>Add Users</p>
-                    </a>
-                </li>
-                {% endif %}
-                <!--li>
-                    <a href="user.html">
+                <li id="n2">
+                    <a href="/manage-profile">
                         <i class="material-icons">person</i>
                         <p>User Profile</p>
                     </a>
                 </li>
-                <li>
-                    <a href="typography.html">
-                        <i class="material-icons">library_books</i>
-                        <p>Typography</p>
-                    </a>
-                </li>
-                <li>
-                    <a href="notifications.html">
+                <li id="n3">
+                    <a href="/notifications">
                         <i class="material-icons text-gray">notifications</i>
                         <p>Notifications</p>
                     </a>
-                </li-->
+                </li>
             </ul>
         </div>
     </div>
@@ -181,8 +166,9 @@
                             </ul>
                         </li>
                         <li>
-                            <a href="#pablo" class="dropdown-toggle" data-toggle="dropdown">
-                                <i class="material-icons">person</i><p class="hidden-lg hidden-md">Unknown Student</p>
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                <i class="material-icons">person</i>
+                                <p class="hidden-lg hidden-md">Unknown Student</p>
                             </a>
                             <ul class="dropdown-menu" id="log-in-out">
                             </ul>

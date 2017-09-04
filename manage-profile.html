@@ -1,4 +1,5 @@
 ---
+name: manage-profile
 title: Manage Profile
 permalink: manage-profile
 ---
@@ -13,7 +14,7 @@ permalink: manage-profile
                 <p class="category">Complete your profile</p>
             </div>
             <div class="card-content">
-                <form id="profile">
+                <form>
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group label-floating">
@@ -47,7 +48,7 @@ permalink: manage-profile
                     <div class="row">
                         <div class="col-md-12">
                             <div class="form-group label-floating">
-                                <label class="control-label">Address</label>
+                                <label class="control-label">Adress</label>
                                 <input type="text" class="form-control" id="addr">
                             </div>
                         </div>
@@ -86,7 +87,7 @@ permalink: manage-profile
                         </div>
                     </div>
 
-                    <button type="submit" class="btn btn-primary pull-right">Update Profile</button>
+                    <button id="up-btn" type="submit" class="btn btn-primary pull-right">Update Profile</button>
                     <div class="clearfix"></div>
                 </form>
             </div>
@@ -103,8 +104,10 @@ permalink: manage-profile
             <div class="content">
                 <h6 class="category text-gray" id="user-title">Unknown Title</h6>
                 <h4 class="card-title" id="user-name">Unknown Member</h4>
-                <p class="card-content" id="user-bio">Unknown Student Bio</p>
-                <!--a href="#" class="btn btn-primary btn-round">Follow</a-->
+                <p class="card-content" id="user-bio">
+                    No Bio Set
+                </p>
+                <!--a href="#pablo" class="btn btn-primary btn-round">Follow</a-->
             </div>
         </div>
     </div>
@@ -113,6 +116,7 @@ permalink: manage-profile
 <script>
 function pageScript()
 {
+    setActive(2);
     getinitOnline();
     getinitInfo();
 }
@@ -165,19 +169,20 @@ function getinitInfo()
 }
 function setinitInfo()
 {
-    var keys = Object.keys(window.u.info);
-    keys.forEach(function(key)
-    {
-        //$('#'+key).focus().value=u.info[key];
-        $('#'+key).focus().attr('value', u.info[key]).trigger("change");
-        $('#'+key).focus().html(u.info[key]).trigger("change");
-        //$('#'+key).closest('div').removeClass('is-empty');
-    });
-    if (window.u.info.title){$('#user-title').html(window.u.info.title);}
     var displayName = window.u.info.fname + ' ' + window.u.info.lname;
+    if (window.u.info.title){$('#user-title').html(window.u.info.title);}
     if (displayName != ' '){$('#user-name').html(displayName);}
     if (window.u.info.photoURL){$('#user-img').attr('src', window.u.info.photoURL);}
     if (window.u.info.bio){$('#user-bio').html(window.u.info.bio);}
+
+    var keys = Object.keys(window.u.info);
+    for (var i=0; i<keys.length; i++)
+    {
+        key = keys[i];
+        $('#'+key).focus().val(u.info[key]);
+        $('#'+key).closest('div').removeClass('is-empty');
+    }
+    hideOverlay();
 }
 </script>
 

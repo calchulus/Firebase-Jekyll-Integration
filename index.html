@@ -1,155 +1,164 @@
 ---
-title: Index
+title: Dashboard
+permalink: index
 ---
-{% include head_pop.html %}
-<body>
-	<div class="image-container set-full-height" style="background-image: url('assets/images/bg.jpg')">
-		<!--   Big container   -->
-		<div class="container">
-			<div class="row">
-				<div class="col-sm-8 col-sm-offset-2">
-					<!--      Wizard container        -->
-					<div class="wizard-container">
-						<div class="card wizard-card" data-color="kamsc" id="wizardProfile">
-							<form action="" method="">
-								<!--        You can switch " data-color="purple" "  with one of the next bright colors: "green", "orange", "red", "blue"       -->
-								<div class="wizard-header">
-									<h3 class="wizard-title">
-										Update your Information
-									</h3>
-									<h5>This information will let other KAMSC Students know more about you.</h5>
-								</div>
-								<div class="wizard-navigation">
-									<ul>
-										<li><a href="#about" data-toggle="tab">About</a></li>
-										<li><a href="#account" data-toggle="tab">Account</a></li>
-									</ul>
-								</div>
 
-								<div class="tab-content">
-									<div class="tab-pane" id="about">
-										<div class="row">
-											<h4 class="info-text"> Let's start with the basic information</h4>
-											<div class="col-sm-4 col-sm-offset-1">
-												<div class="picture-container">
-													<div class="picture">
-														<img src="assets/images/default-avatar.png" class="picture-src" id="wizardPicturePreview" title=""/>
-														<input type="file" id="wizard-picture">
-													</div>
-													<h6>Choose Picture</h6>
-												</div>
-											</div>
-											<div class="col-sm-6">
-												<div class="col-sm-6">
-													<div class="input-group">
-														<span class="input-group-addon">
-															<i class="material-icons">face</i>
-														</span>
-														<div class="form-group label-floating">
-															<label class="control-label">First Name</label>
-															<input name="firstname" type="text" class="form-control" value="Sid" disabled>
-														</div>
-													</div>
-												</div>
-												<div class="col-sm-6">
-													<div class="input-group">
-														<span class="input-group-addon">
-															<i class="material-icons">record_voice_over</i>
-														</span>
-														<div class="form-group label-floating">
-															<label class="control-label">Last Name</label>
-															<input name="lastname" type="text" class="form-control" value="Pagariya" disabled>
-														</div>
-													</div>
-												</div>
-												<div class="col-sm-12">
-													<div class="input-group">
-														<span class="input-group-addon">
-															<i class="material-icons">email</i>
-														</span>
-														<div class="form-group label-floating">
-															<label class="control-label">Email <small>(required)</small></label>
-															<input name="email" type="email" class="form-control">
-														</div>
-													</div>
-												</div>
-											</div>
-										</div>
-									</div>
-									<div class="tab-pane" id="account">
-										<h4 class="info-text"> How you will access Exclusive KAMSC Insider Information </h4>
-										<div class="row">
-											<div class="col-sm-10 col-sm-offset-1">
-												<div class="col-sm-6">
-													<div class="input-group">
-														<span class="input-group-addon">
-															<i class="material-icons">account_circle</i>
-														</span>
-														<div class="form-group label-floating">
-															<label class="control-label">Username</label>
-															<input name="username" type="text" class="form-control" value="SPagariya18" disabled >
-														</div>
-													</div>
-												</div>
-												<div class="col-sm-6">
-													<div class="input-group">
-														<span class="input-group-addon">
-															<i class="material-icons">lock</i>
-														</span>
-														<div class="form-group label-floating">
-															<label class="control-label">Password <small>(required)</small></label>
-															<input name="password" type="password" class="form-control" id="password">
-														</div>
-													</div>
-												</div>
-											</div>
-											<div class="col-sm-10 col-sm-offset-1">
-												<div class="col-sm-6">
-												</div>
-												<div class="col-sm-6">
-													<div class="input-group">
-														<span class="input-group-addon">
-															<i class="material-icons">lock</i>
-														</span>
-														<div class="form-group label-floating">
-															<label class="control-label">Reenter Password <small>(required)</small></label>
-															<input name="password_check" type="password" class="form-control">
-														</div>
-													</div>
-												</div>
-											</div>
-										</div>
-									</div>
-								<div class="wizard-footer">
-									<div class="pull-right">
-										<input type='button' class='btn btn-next btn-fill btn-success btn-wd' name='next' value='Next' />
-										<input type='button' class='btn btn-finish btn-fill btn-success btn-wd' name='finish' value='Finish' />
-									</div>
+{% include head.html %}
 
-									<div class="pull-left">
-										<input type='button' class='btn btn-previous btn-fill btn-default btn-wd' name='previous' value='Previous' />
-									</div>
-									<div class="clearfix"></div>
-								</div>
-							</form>
-						</div>
-					</div> <!-- wizard container -->
-				</div>
-			</div><!-- end row -->
-		</div> <!--  big container -->
+<div class="row">
+    <div class="col-lg-10 col-md-10 col-sm-10 col-lg-offset-1 col-md-offset-1 col-sm-offset-1">
+        <div class="card card-profile">
+            <div class="card-avatar">
+                <a href="manage-account">
+                    <img class="img" id="user-img" src="assets/images/default-avatar.png"/>
+                </a>
+            </div>
 
-		<div class="footer">
-			<div class="container text-center">
-				Made with <i class="fa fa-heart heart"></i> by Sid.</a>
-			</div>
-		</div>
-	</div>
+            <div class="content">
+                <h6 class="category text-gray" id="user-title">Unknown Title</h6>
+                <h4 class="card-title" id="user-name">Unknown Student</h4>
+                <p class="card-content" id="bio">Unknown Student Bio</p>
+                <a href="../manage-profile" class="btn btn-primary btn-round">Edit</a>
+            </div>
+        </div>
+    </div>
+</div>
 
-	<!--/body>
-	<script src="assets/js/jquery-2.2.4.min.js" type="text/javascript"></script>
-	<script src="assets/js/bootstrap.min.js" type="text/javascript"></script>
-	<script src="assets/js/jquery.bootstrap.js" type="text/javascript"></script>
-	<script src="assets/js/material-bootstrap-wizard.js"></script>
-	<script src="assets/js/jquery.validate.min.js"></script>
-	</html-->
-	{% include footer_pop.html %}
+<div class="row">
+    <div class="col-md-8">
+        <div class="title">
+            <h3>Who's online?</h3>
+        </div>
+        <!-- Tabs with icons on Card -->
+        <div class="card card-nav-tabs">
+            <div class="header-tab header-tab-danger">
+                <!-- colors: "header-primary", "header-info", "header-success", "header-warning", "header-danger" -->
+                <div class="nav-tabs-navigation">
+                    <div class="nav-tabs-wrapper">
+                        <ul class="nav nav-tabs" data-tabs="tabs">
+                            <li class="active">
+                                <a href="#all-online" data-toggle="tab" aria-expanded="false">
+                                    <i class="material-icons">face</i>
+                                    All Online
+                                    <div class="ripple-container"></div>
+                                </a>
+                            </li>
+                            <li class="">
+                                <a href="#users" data-toggle="tab" aria-expanded="false">
+                                    <i class="material-icons">stars</i>
+                                    Users
+                                    <div class="ripple-container"></div>
+                                </a>
+                            </li>
+                            <li class="">
+                                <a href="#members" data-toggle="tab" aria-expanded="true">
+                                    <i class="material-icons">verified_user</i>
+                                    Members
+                                    <div class="ripple-container"></div>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="content padded-15">
+                <div class="tab-content text-left">
+                    <div class="tab-pane active" id="all-online">
+                        <span>Total online: </span><span class="label label-warning" id="sA">0</span>
+                    </div>
+                    <div class="tab-pane" id="users">
+                        <span>Total online users: </span><span class="label label-info" id="sU">0</span>
+                    </div>
+                    <div class="tab-pane" id="members">
+                        <span>Total online members: </span><span class="label label-success" id="sM">0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="title">
+            <h3>Links</h3>
+        </div>
+        <div class="card">
+            <div class="card-header" data-background-color="orange">
+                <h4 class="title">Links that only you can access</h4>
+            </div>
+            <div class="card-content">
+                <a class="btn btn-warning" href="#" class="button">Trial link</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function pageScript(_nimad)
+{
+    //console.log("Admin status: " + _nimad);
+    setActive(1);
+    getinitOnline();
+    getinitInfo();
+}
+function getinitOnline()
+{
+    var ref = database.ref('online');
+    window.onlineA = 0;
+    window.onlineM = 0;
+    window.onlineU = 0;
+    ref.once('value', function(snapshot) {
+        snapshot.forEach(function(childSnapshot) {
+            var childData = childSnapshot.val();
+            if (childData.o == "true")
+            {
+                window.onlineA = window.onlineA+1;
+            }
+            if (childData.m == "true")
+            {
+                //console.log("member!");
+                window.onlineM++;
+            }
+            else
+            {
+                //console.log("user!");
+                window.onlineU++;
+            }
+        });
+        setinitOnline();
+    });
+}
+function setinitOnline()
+{
+    //console.log(window.onlineA);
+    //console.log(window.onlineM);
+    //console.log(window.onlineU);
+    $('#sA').html(window.onlineA.toString());
+    $('#sU').html(window.onlineU.toString());
+    $('#sM').html(window.onlineM.toString());
+}
+function getinitInfo()
+{
+    var ref = database.ref('users/'+u.uid);
+    ref.once('value', function(snapshot) {
+        window.u.info = snapshot.val();
+        //console.log(snapshot.val());
+        setinitInfo();
+    });
+    //if (!u.isAnonymous){$("#user-name").html(u.displayName);}
+    //if (u.photoURL){$("#user-img").attr("src",u.photoURL);}
+}
+function setinitInfo()
+{
+    var keys = Object.keys(window.u.info);
+    keys.forEach(function(key)
+    {
+        $('#'+key).html(u.info[key]);
+    });
+    var showName = window.u.info.fname + ' ' + window.u.info.lname;
+    if (window.u.info.title){$('#user-title').html(window.u.info.title);}
+    if (showName != ' '){$('#user-name').html(showName);}
+    if (window.u.info.photoURL){$('#user-img').attr('src', window.u.info.photoURL);}
+    hideOverlay();
+}
+</script>
+
+{% include footer.html %}

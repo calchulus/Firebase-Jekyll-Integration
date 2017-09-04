@@ -32,7 +32,7 @@ permalink: login
                         </div>
                     </div>
 
-                    <button type="submit" class="btn btn-primary pull-right">Login</button>
+                    <button class="btn btn-primary pull-right" id="login" type="submit">Login</button>
                     <div class="clearfix"></div>
                 </form>
             </div>
@@ -41,12 +41,64 @@ permalink: login
 </div>
 
 <script>
-function pageScript()
+function pageScript(_nimad)
 {
+    database.goOnline();
     if (!window.u.isAnonymous)
     {
-        location.href="../dashboard";
+        location.replace("../index");
     }
+    $('#login').click(login);
+    $("#login").submit(function(e) {
+        e.preventDefault();
+    });
+    $("#profile").attr('onsubmit', 'return false');
+    hideOverlay();
+}
+function login()
+{
+    var username = $('#username').val();
+    var password = $('#password').val();
+    //console.log(username);
+    //console.log(password);
+    lu(username, password);
+    return false;
+}
+function lu(username, password)
+{
+    //Get email from username somehow.
+    const chrespurl = "https://us-central1-web-dev-hosting.cloudfunctions.net/checkPasswordRespEmail";
+    $.ajax({
+        type: 'POST',
+        url: chrespurl,
+        data: JSON.stringify({username: username, password: CryptoJS.AES.encrypt(password, 'KAMCh0m3!9455W0RD').toString()}),
+        success: function(data) {
+            console.log(data);
+            console.log(password);
+            database.goOffline();
+            $.notify({
+	            message: 'Login success.'
+            },{
+	            type: 'success'
+            });
+            firebase.auth().signInWithEmailAndPassword(data.toString(), password).catch(function(error){
+                // Handle Errors here.
+                var errorMessage = error.message;
+                console.log("Sign in Error: " + errorMessage);
+            });
+            database.goOnline();
+        },
+        error: function(data) {
+            console.log(data.status);
+            $.notify({
+	            message: 'Login failed. Check username and password.'
+            },{
+	            type: 'danger'
+            });
+        },
+        contentType: "application/json",
+        dataType: 'text'
+    });
 }
 </script>
 

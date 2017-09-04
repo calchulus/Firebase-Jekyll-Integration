@@ -1,0 +1,34 @@
+---
+title: Logout
+permalink: logout
+---
+
+{% include head.html %}
+
+<div class="row">
+    <div class="col-md-6  col-md-offset-3">
+        <div class="card">
+            <div class="card-header" data-background-color="kamsc">
+                <h4 class="title">Logout</h4>
+                <p class="category"></p>
+            </div>
+            <div class="card-content">
+                <h4 class="title">Now logging you out...</h4>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function pageScript()
+{
+    database.goOffline();
+    firebase.auth().signOut().then(function() {
+        setTimeout(function(){location.replace("../login");}, 200);
+    }).catch(function(error) {
+        console.log(error);
+    });
+}
+</script>
+
+{% include footer.html %}

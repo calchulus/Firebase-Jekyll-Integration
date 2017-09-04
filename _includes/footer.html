@@ -25,7 +25,7 @@
             </ul>
         </nav>
         <p class="copyright pull-right">
-            &copy; <script>document.write(new Date().getFullYear())</script> <a href="https://sidpagariya.github.io/">Sid Pagariya</a>, made with love for KAMSC.
+            Copyright &copy; <script>document.write(new Date().getFullYear())</script> Sid</a>, made with love for KAMSC.
         </p>
     </div>
 </footer>
@@ -41,7 +41,7 @@
 <!--script src="assets/js/chartist.min.js"></script-->
 
 <!--  Notifications Plugin    -->
-<script src="assets/js/bootstrap-notify.js"></script>
+<script src='assets/js/bootstrap-notify.min.js'></script>
 
 <!--  Google Maps Plugin    -->
 <!--script type="text/javascript" src="https://maps.googleapis.com/maps/api/js"></script-->
@@ -50,9 +50,11 @@
 <script src="assets/js/material-dashboard.js"></script>
 
 <script src="assets/js/jquery.validate.min.js"></script>
-<script src="assets/js/sha3.min.js"></script>
+<script src="assets/js/crypto/core-min.js"></script>
+<script src="assets/js/crypto/aes.js"></script>
 <script src="assets/js/firebase.js"></script>
 <script src='assets/js/idle.min.js'></script>
+
 
 <script>
 // Initialize Firebase
@@ -81,15 +83,9 @@ if (c === 0)
 {
     $("#noti-count").css('display', 'none');
 }
-//$("#user-img").attr("src","https://scontent-ort2-1.cdninstagram.com/t51.2885-15/e35/13397508_298498917154078_615084960_n.jpg");
 </script>
 
-<!--Now, display the page.-->
-<script>
-setTimeout(function(){$(".loader-overlay").css('opacity','0');},400);
-setTimeout(function(){$(".wrapper").css('display','block');}, 300);
-setTimeout(function(){$(".loader-overlay").css('z-index','-1');}, 700);
-</script>
+<!--TODO REMOVE FOR DEPLOYMENT--><script src="http://localhost:35729/livereload.js"></script><!--TODO REMOVE FOR DEPLOYMENT-->
 
 </body>
 </html>

@@ -66,25 +66,69 @@ firebase.auth().onAuthStateChanged(function(user) {
         updateStatus(database.ref('presence/' + u.uid));
         onlineList(database.ref('online/' + u.uid));
         setLoginInfo();
-        pageScript();
+        checkAcc('_nimad/' + u.uid);
     } else {
         //Anonymously sign in.
-        /*firebase.auth().signInAnonymously().catch(function(error) {
+        firebase.auth().signInAnonymously().catch(function(error) {
             // Handle Errors here.
-            var errorCode = error.code;
             var errorMessage = error.message;
-            // ...
-            console.log(errorCode + ": " + errorMessage);
-        });*/
+            console.log(errorMessage);
+        });
     }
 });
 function setLoginInfo()
 {
-    if (!window.u.isAnonymous) {
-        $("#log-in-out").append('<li><a href="../manage-profile"><span class="tab">Manage Profile</span></a></li>');
-        $("#log-in-out").append('<li><a href="../logout"><span class="tab">Logout</span></a></li>');
+    if (window.u) {
+        if (!window.u.isAnonymous) {
+            $("#log-in-out").append('<li><a href="../manage-profile"><span class="tab">Manage Profile</span></a></li>');
+            $("#log-in-out").append('<li><a href="../logout"><span class="tab">Logout</span></a></li>');
+        }
+        else {
+            $("#log-in-out").append('<li><a href="../login"><span class="tab">Login</span></a></li>');
+            if (location.href.indexOf("/login") <= -1)
+            {
+                location.replace("../login");
+            }
+        }
     }
     else {
         $("#log-in-out").append('<li><a href="../login"><span class="tab">Login</span></a></li>');
+        if (location.href.indexOf("/login") <= -1)
+        {
+            location.replace("../login");
+        }
     }
+}
+function checkAcc(adRef)
+{
+    var ad = database.ref(adRef);
+    ad.once('value', function(snapshot) {
+        if (snapshot.val() !== null) {
+            //console.log(snapshot.val() == true);
+            console.log("Checking admin started...");
+            if (snapshot.val() === true) {
+                navedit(snapshot.val());
+            }
+            pageScript(snapshot.val());
+            console.log("Checking admin done.");
+        }
+        else {
+            console.log("Admin val is null.");
+            pageScript(null);
+        }
+    });
+}
+function navedit(_nimad)
+{
+    if (_nimad) {
+        $("#nav-items").append('<li id="n4"><a href="addusers.html"><i class="material-icons text-gray">person_add</i><p>Add Users</p></a></li>');
+    }
+}
+function hideOverlay() {
+    setTimeout(function(){$(".loader-overlay").css('opacity','0');}, 100);
+    setTimeout(function(){$(".wrapper").css('display','block');}, 100);
+    setTimeout(function(){$(".loader-overlay").css('z-index','-1');}, 500);
+}
+function setActive(ind) {
+    $('#n'+ind).attr('class', 'active');
 }
